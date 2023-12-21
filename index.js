@@ -117,7 +117,7 @@ Less2Sass.prototype.convertInterpolatedVariables = function() {
 
 Less2Sass.prototype.convertVariables = function() {
   // Matches any @ that doesn't have 'media ' or 'import ' after it.
-  var atRegex = /@(?!(media|import|mixin|font-face|keyframes|kr-modules|supports)(\s|\(|\/))/g;
+  var atRegex = /@(?!(media|import|mixin|font-face|keyframes|kr-modules|supports|value)(\s|\(|\/))/g;
 
   this.file = this.file.replace(atRegex, '$');
 
