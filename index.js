@@ -9,6 +9,9 @@ Less2Sass.prototype.convert = function(file) {
   this.file = file;
 
   this.convertInterpolatedVariables()
+      .convertReferenceImports()
+      .convertUrlImports()
+      .convertAbsoluteImports()
       .convertVariables()
       .convertTildaStrings()
       .includeMixins()
@@ -19,6 +22,30 @@ Less2Sass.prototype.convert = function(file) {
       .convertFunctionUnit();
 
   return this.file;
+};
+
+Less2Sass.prototype.convertReferenceImports = function() {
+  var includeRegex = /^@import\s*\(reference\)/gm;
+
+  this.file = this.file.replace(includeRegex, '@import');
+
+  return this;
+};
+
+Less2Sass.prototype.convertUrlImports = function() {
+  var includeRegex = /^@import url\((.*)\);/gm;
+
+  this.file = this.file.replace(includeRegex, '@import $1;');
+
+  return this;
+};
+
+Less2Sass.prototype.convertAbsoluteImports = function() {
+  var includeRegex = /^@import '@kr-modules\//gm;
+
+  this.file = this.file.replace(includeRegex, '@import \'~@kr-modules/');
+
+  return this;
 };
 
 Less2Sass.prototype.includeMixins = function() {
@@ -90,7 +117,7 @@ Less2Sass.prototype.convertInterpolatedVariables = function() {
 
 Less2Sass.prototype.convertVariables = function() {
   // Matches any @ that doesn't have 'media ' or 'import ' after it.
-  var atRegex = /@(?!(media|import|mixin|font-face|keyframes)(\s|\())/g;
+  var atRegex = /@(?!(media|import|mixin|font-face|keyframes|kr-modules)(\s|\(|\/))/g;
 
   this.file = this.file.replace(atRegex, '$');
 
