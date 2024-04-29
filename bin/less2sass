@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var program = require('commander');
+var {Command} = require('commander');
 var path = require('path');
 var fs = require('fs');
 var less2sass = require('..');
@@ -56,22 +56,11 @@ function convert(filePath) {
 /**
  * Usage.
  */
-
-program
+const program = new Command()
+  .name('less2sass')
+  .description('Converts .less files to .scss (sass) files')
   .version(require('../package.json').version)
-  .usage('<less file>');
-
-
-/**
- * Examples.
- */
-
-program.on('--help', function () {
-  console.log('  Commands:');
-  console.log();
-  console.log('    less2sass <less file>       converts the less file to scss.\n');
-  console.log();
-});
+  .argument('<filepath>', 'The file (or directory) path to convert (can recursively convert all files in a directory)');
 
 /**
  * Parse.
@@ -79,22 +68,11 @@ program.on('--help', function () {
 
 program.parse(process.argv);
 
-// args void of file path
-
-var args = process.argv.slice(3);
-
-// command
-if (program.args[0] === undefined) {
-  error('fail', 'You must provide a file path');
-
-  program.help();
-}
-
 function read(filePath) {
   var fullPath = path.resolve(process.cwd(), filePath);
   var stats = fs.statSync(fullPath);
   info('scanning', fullPath);
-  
+
   if (isLessFile(fullPath)) {
     convert(fullPath);
   }

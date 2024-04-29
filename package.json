@@ -32,7 +32,7 @@
     "test": "npm run mocha"
   },
   "dependencies": {
-    "commander": "^2.9.0",
+    "commander": "^12.0.0",
     "mkdirp": "^0.5.1",
     "win-fork": "^1.1.1"
   }
