@@ -30,11 +30,16 @@ function error(type, msg){
   log(type, msg, '31');
 }
 
-function write(path, str) {
-  if (fs.existsSync(path)) {
+function write(path, str, forceWrite) {
+  var fileAlreadyExists = fs.existsSync(path);
+  if (fileAlreadyExists && !forceWrite) {
     warn('exists', path);
   } else {
-    log('create', path, '32');
+    if (fileAlreadyExists) {
+      warn('overwrite', path);
+    } else {
+      log('create', path, '32');
+    }
     fs.writeFileSync(path, str);
   }
 }
@@ -43,14 +48,14 @@ function isLessFile(filename) {
   return /\.less$/.test(filename);
 }
 
-function convert(filePath) {
+function convert(filePath, forceWrite) {
   info('processing', filePath);
 
   var buffer = fs.readFileSync(filePath);
   var output = less2sass.convert(buffer.toString());
   var newPath = filePath.replace(/\.less$/, '.scss');
 
-  write(newPath, output);
+  write(newPath, output, forceWrite);
 }
 
 /**
@@ -60,7 +65,8 @@ const program = new Command()
   .name('less2sass')
   .description('Converts .less files to .scss (sass) files')
   .version(require('../package.json').version)
-  .argument('<filepath>', 'The file (or directory) path to convert (can recursively convert all files in a directory)');
+  .argument('<filepath>', 'The file (or directory) path to convert (can recursively convert all files in a directory)')
+  .option('--force', 'Force less2sass to write out the new file, even if a .scss file already exists with at the destination.');
 
 /**
  * Parse.
@@ -68,27 +74,27 @@ const program = new Command()
 
 program.parse(process.argv);
 
-function read(filePath) {
+function read(filePath, options) {
   var fullPath = path.resolve(process.cwd(), filePath);
   var stats = fs.statSync(fullPath);
   info('scanning', fullPath);
 
   if (isLessFile(fullPath)) {
-    convert(fullPath);
+    convert(fullPath, options.force);
   }
   else if (stats.isDirectory()){
     var files = fs.readdirSync(fullPath);
 
     for (var i = 0; i < files.length; i++) {
-      read(path.join(fullPath, files[i]));
+      read(path.join(fullPath, files[i]), options);
     }
   }
 }
 
-function convertFiles(filePaths) {
+function convertFiles(filePaths, options) {
   for (const filePath of filePaths) {
-    read(filePath);
+    read(filePath, options);
   }
 }
 
-convertFiles(program.args);
+convertFiles(program.args, program.opts());
