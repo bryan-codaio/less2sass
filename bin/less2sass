@@ -85,4 +85,10 @@ function read(filePath) {
   }
 }
 
-read(program.args[0]);
+function convertFiles(filePaths) {
+  for (const filePath of filePaths) {
+    read(filePath);
+  }
+}
+
+convertFiles(program.args);
