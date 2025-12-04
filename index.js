@@ -11,7 +11,6 @@ Less2Sass.prototype.convert = function(file) {
   this.convertInterpolatedVariables()
       .convertReferenceImports()
       .convertUrlImports()
-      .convertAbsoluteImports()
       .convertVariables()
       .convertTildaStrings()
       .includeMixins()
@@ -36,14 +35,6 @@ Less2Sass.prototype.convertUrlImports = function() {
   var includeRegex = /^@import url\((.*)\);/gm;
 
   this.file = this.file.replace(includeRegex, '@import $1;');
-
-  return this;
-};
-
-Less2Sass.prototype.convertAbsoluteImports = function() {
-  var includeRegex = /^@import '@kr-modules\//gm;
-
-  this.file = this.file.replace(includeRegex, '@import \'~@kr-modules/');
 
   return this;
 };
