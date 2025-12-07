@@ -161,6 +161,11 @@ describe('less2sass', function() {
       const result = less2sass.convert('font-size: .5em;');
       assert.equal(result, 'font-size: .5em;');
     });
+
+    it('converts mixin with inline comment', function() {
+      const result = less2sass.convert('.box-sizing(); // set proper box sizing');
+      assert.equal(result, '@include box-sizing(); // set proper box sizing');
+    });
   });
 
   describe('imports', function() {

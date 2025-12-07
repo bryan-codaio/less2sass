@@ -40,7 +40,7 @@ Less2Sass.prototype.convertUrlImports = function() {
 };
 
 Less2Sass.prototype.includeMixins = function() {
-  var includeRegex = /^(\s*)\.([a-zA-Z][\w\-]*\(?[^;{}]*\)?;{1}$)/gm;
+  var includeRegex = /^(\s*)\.([a-zA-Z][\w\-]*\(?[^;{}]*\)?;( \/\/ .+)?$)/gm;
 
   this.file = this.file.replace(includeRegex, '$1@include $2');
 
