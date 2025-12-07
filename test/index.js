@@ -75,6 +75,11 @@ describe('less2sass', function() {
       const result = less2sass.convert('@keyframes {}');
       assert.equal(result, '@keyframes {}');
     });
+
+    it('wraps media query + variable in interpolation', function() {
+      const result = less2sass.convert('      @media @mobile-small {');
+      assert.equal(result, '      @media #{$mobile-small} {');
+    });
   });
 
   describe("~ strings", function() {
@@ -183,15 +188,18 @@ describe('less2sass', function() {
         const result = less2sass.convert('unit(5em)');
         assert.equal(result, 'unit-less(5em)');
       });
+
       it('convert two param call of less unit without unit in first param to dimension + unit', function() {
         const result = less2sass.convert('unit(42,px)');
         assert.equal(result, '0px + 42');
       });
+
       it('convert two param call of less unit with unit in first param to unit conversion', function() {
         // https://www.sitepoint.com/understanding-sass-units/
         const result = less2sass.convert('unit(5in,px)');
         assert.equal(result, '0px + 5in');
       });
+
       it('manage variable in first param', function() {
         const result = less2sass.convert('unit($size,px)');
         assert.equal(result, '0px + $size');
@@ -210,5 +218,4 @@ describe('less2sass', function() {
       assert.equal(false, true);
     });
   });
-
 });

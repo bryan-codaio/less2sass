@@ -18,6 +18,7 @@ Less2Sass.prototype.convert = function(file) {
       .convertExtend()
       .convertColourHelpers()
       .convertFileExtensions()
+      .wrapWithInterpolation()
       .convertFunctionUnit();
 
   return this.file;
@@ -119,6 +120,14 @@ Less2Sass.prototype.convertFileExtensions = function() {
   var extensionRegex = /\.less/g;
 
   this.file = this.file.replace(extensionRegex, '.scss');
+
+  return this;
+};
+
+Less2Sass.prototype.wrapWithInterpolation = function() {
+  var mediaAndVariableRegex = /^(\s*@media\s+)(\$.*)(\s+\{)/gm;
+
+  this.file = this.file.replace(mediaAndVariableRegex, '$1#{$2}$3');
 
   return this;
 };
