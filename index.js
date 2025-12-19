@@ -117,7 +117,7 @@ Less2Sass.prototype.convertVariables = function() {
 };
 
 Less2Sass.prototype.convertFileExtensions = function() {
-  var extensionRegex = /\.less/g;
+  var extensionRegex = /\.less\b/g;
 
   this.file = this.file.replace(extensionRegex, '.scss');
 
